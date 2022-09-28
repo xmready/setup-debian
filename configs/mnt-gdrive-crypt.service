@@ -1,0 +1,20 @@
+[Unit]
+Description=Rclone Google Drive Mount
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+Restart=on-abort
+RestartSec=5
+User=
+Group=
+ExecStart=/usr/bin/rclone mount vault: /mnt/vault \
+  --vfs-cache-mode full \
+  --dir-perms 700 \
+  --file-perms 600
+ExecStop=/bin/fusermount -zu /mnt/vault
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
