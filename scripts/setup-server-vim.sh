@@ -1,6 +1,13 @@
 #!/usr/bin/bash
 
-# vim setup for a server
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/system-setup
+#
+# Purpose:
+#   A script to create custom .vimrc for servers
+#
+# sudo usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/setup-server-vim.sh | bash -
 
 VIMRCROOT=https://raw.githubusercontent.com/xmready/vim-config/main/.vimrc-root
 
