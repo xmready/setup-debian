@@ -6,8 +6,8 @@
 # Purpose:
 #   A script to setup a new debian based desktop/laptop
 #
-# Non-root usage:
-#   wget -O- https://raw.githubusercontent.com/xmready/system-setup/main/setup-system.sh | bash -
+# sudo usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/setup-system.sh | bash -
 
 SETUP_APT=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-apt.sh
 SETUP_SHELL=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-shell.sh
