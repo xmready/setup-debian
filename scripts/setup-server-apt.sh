@@ -17,7 +17,7 @@ echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
 && sleep 3 \
 && sudo -v \
 && echo -e "\n$(tput setaf 3)installing packages\n$(tput sgr0)" \
-&& sudo apt-get install \
+&& sudo apt-get install -y \
   curl \
   fail2ban \
   git \
