@@ -7,7 +7,7 @@
 #   A script to install and configure packages with apt
 #
 # Non-root usage:
-#   wget -O- https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-apt.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-apt.sh | bash -
 
 echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
 && sudo apt-get update \
@@ -23,7 +23,6 @@ echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
   checkinstall \
   curl \
   fastfetch \
-  figlet \
   flatpak \
   fprintd \
   fzf \
