@@ -11,12 +11,12 @@
 
 AUTOUPGRADE=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/autoupgrade.sh
 TEMPS=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/temps.sh
-WHATSMYIP=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/whatsmyip.sh
+DNS_LEAK_TEST_URL=https://raw.githubusercontent.com/macvk/dnsleaktest/refs/heads/master/dnsleaktest.sh
 
-echo -e "\n$(tput setaf 3)installing custom commands\n$(tput sgr0)" \
+echo -e "\n$(tput setaf 3)installing custom server commands\n$(tput sgr0)" \
 && sudo curl -fLo /usr/local/bin/autoupgrade "$AUTOUPGRADE" \
 && sudo curl -fLo /usr/local/bin/temps "$TEMPS" \
-&& sudo curl -fLo /usr/local/bin/whatsmyip "$WHATSMYIP" \
+&& sudo curl -fLo /usr/local/bin/whatsmyip "$DNS_LEAK_TEST_URL" \
 && sudo chmod +x /usr/local/bin/* \
 && sudo -v \
-&& echo -e "\n$(tput setaf 2)custom commands installed\n$(tput sgr0)"
+&& echo -e "\n$(tput setaf 2)custom server commands installed\n$(tput sgr0)"
