@@ -1,17 +1,18 @@
 #!/usr/bin/bash
 
-# apt  and flatpak system setup
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/system-setup
+#
+# Purpose:
+#   A script to install and configure packages with apt
+#
+# Non-root usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-server-apt.sh | bash -
 
-echo -e "\n$(tput setaf 3)cleaning sources list\n$(tput sgr0)" \
-&& sudo sed -i '/#/d' /etc/apt/sources.list \
-&& sudo sed -i '/^$/d' /etc/apt/sources.list \
-&& cat /etc/apt/sources.list \
-&& echo -e "\n$(tput setaf 2)sources list cleaned\n$(tput sgr0)" \
-&& sleep 3 \
-&& echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
+echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
 && sudo apt-get update \
-&& sudo apt-get upgrade \
-&& sudo apt-get full-upgrade \
+&& sudo apt-get upgrade -y \
+&& sudo apt-get full-upgrade -y \
 && echo -e "\n$(tput setaf 2)packages upgraded\n$(tput sgr0)" \
 && sleep 3 \
 && sudo -v \
