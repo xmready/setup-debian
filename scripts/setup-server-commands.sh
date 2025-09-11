@@ -9,7 +9,7 @@
 # Non-root usage:
 #   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-server-commands.sh | bash -
 
-AUTOUPGRADE=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/autoupgrade.sh
+AUTOUPGRADE=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/server-autoupgrade.sh
 TEMPS=https://raw.githubusercontent.com/xmready/system-setup/main/scripts/temps.sh
 DNS_LEAK_TEST_URL=https://raw.githubusercontent.com/macvk/dnsleaktest/refs/heads/master/dnsleaktest.sh
 
