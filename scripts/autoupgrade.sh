@@ -4,9 +4,9 @@
 #   https://github.com/xmready/system-setup
 #
 # Purpose:
-#   A script to install and configure nvm-sh and nodejs
+#   A script to update, upgrade, and full-upgrade using apt
 #
-# Non-root usage:
+# sudo usage:
 #   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/autoupgrade.sh | bash -
 
 get_latest_release() {
