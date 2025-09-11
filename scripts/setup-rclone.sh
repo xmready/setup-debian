@@ -7,7 +7,7 @@
 #   A script to setup and configure rclone
 #
 # Non-root usage:
-#   wget -O- https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-rclone.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-rclone.sh | bash -
 
 RCLONE_DEB_URL=https://downloads.rclone.org/rclone-current-linux-amd64.deb
 GDRIVE_UNIT_PATH=/lib/systemd/system/mnt-gdrive.service
