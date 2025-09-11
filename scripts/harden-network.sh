@@ -1,6 +1,13 @@
 #!/usr/bin/bash
 
-# harden network with firewall and timestamps
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/system-setup
+#
+# Purpose:
+#   A script to harden network settings with firewall and timestamps conf
+#
+# Non-root usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/harden-network.sh | bash -
 
 TIMESTAMPS_PATH=/etc/sysctl.d/90-tcp_timestamps.conf
 TIMESTAMPS_URL=https://raw.githubusercontent.com/xmready/system-setup/main/configs/90-tcp_timestamps.conf
