@@ -7,7 +7,7 @@
 #   A script to install and configure flatpaks
 #
 # Non-root usage:
-#   wget -O- https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-flatpak.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-flatpak.sh | bash -
 
 FLATHUB_REPO_URL=https://flathub.org/repo/flathub.flatpakrepo
 
