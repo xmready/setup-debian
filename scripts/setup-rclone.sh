@@ -9,7 +9,8 @@
 # Non-root usage:
 #   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-rclone.sh | bash -
 
-RCLONE_DEB_URL=https://downloads.rclone.org/rclone-current-linux-amd64.deb
+ARCH="$(dpkg --print-architecture)"
+RCLONE_DEB_URL=https://downloads.rclone.org/rclone-current-linux-"$ARCH".deb
 GDRIVE_UNIT_PATH=/lib/systemd/system/mnt-gdrive.service
 CRYPT_UNIT_PATH=/lib/systemd/system/mnt-gdrive-crypt.service
 GDRIVE_UNIT_URL=https://raw.githubusercontent.com/xmready/system-setup/main/configs/mnt-gdrive.service
