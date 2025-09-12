@@ -32,9 +32,7 @@ echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
   libpam-fprintd \
   lm-sensors \
   lxc \
-  network-manager-openvpn-gnome \
   nmap \
-  openvpn \
   pipx \
   python3-pip \
   qrencode \
