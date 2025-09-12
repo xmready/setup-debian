@@ -32,18 +32,4 @@ echo -e "\n$(tput setaf 3)installing rclone\n$(tput sgr0)" \
 && sudo sed -i s/^Group=*/Group="$USER"/ "$CRYPT_UNIT_PATH" \
 && sudo curl -fLo "$NM_SCRIPT_PATH" "$NM_SCRIPT_URL" \
 && sudo chmod 755 /etc/NetworkManager/dispatcher.d/* \
-&& echo -e "\n$(tput setaf 2)rclone installed\n$(tput sgr0)" \
-&& sleep 3 \
-&& echo -e "\n$(tput setaf 3)creating rclone sym links\n$(tput sgr0)" \
-&& ln -s /mnt/gdrive ~/gdrive \
-&& ln -s /mnt/vault ~/vault \
-&& ln -s /mnt/vault/configs/.bash_aliases ~/.bash_aliases \
-&& ln -s /mnt/vault/configs/.gitconfig ~/.gitconfig \
-&& ln -s /mnt/vault/configs/.gitignore_global ~/.gitignore_global \
-&& rm -rf ~/.gnupg \
-&& rm -rf ~/.ssh \
-&& ln -s /mnt/vault/configs/.gnupg ~/.gnupg \
-&& ln -s /mnt/vault/configs/.ssh ~/.ssh \
-&& mkdir -p ~/.config/procps \
-&& ln -s /mnt/vault/configs/toprc ~/.config/procps/toprc \
-&& echo -e "\n$(tput setaf 2)rclone sym links created\n$(tput sgr0)"
+&& echo -e "\n$(tput setaf 2)rclone installed\n$(tput sgr0)"
