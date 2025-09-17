@@ -92,7 +92,7 @@ For Debian desktop systems `setup-system.sh` will do the following:
     - Clone [vim-config repository](https://github.com/xmready/vim-config) to `~/.vim`
     - Create symlink in `~` to custom `.vimrc`
     - Install custom `.vimrc` for root user
-    - Install Nerd Fonts for current user
+    - Install the following Nerd Fonts for current user
         - DejaVuSansMono
         - FiraCode
         - Hack
