@@ -7,7 +7,7 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 - [Usage](#usage)
     - [Debian Desktop Usage](#debian-desktop-sudo-usage)
     - [Debian Server Usage](#debian-server-sudo-usage)
-- [What It Does](#what-it-does)
+- [Setup Features](#setup-features)
     - [Debian Desktop Setup Features](#debian-desktop-setup-features)
     - [Debian Server Setup Features](#debian-server-setup-features)
 
@@ -35,7 +35,7 @@ curl -fL \
    | bash -
 ```
 
-## What It Does
+## Setup Features
 
 ### Debian Desktop Setup Features
 
