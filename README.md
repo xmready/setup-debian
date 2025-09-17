@@ -14,7 +14,7 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 ## Requirements
 
 - Debian or Debian based operating system
-- Gnome is required for desktop usage
+- Gnome or Plasma are required for desktop usage
 - Access to terminal/shell where output is visible
 - Terminal/shell user has sudo privileges
 - `bash` & `curl` must be installed already
