@@ -3,7 +3,7 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 
 ## Table of Contents
 
-- [Prerequisites](#prerequisites)
+- [Requirements](#requirements)
 - [Usage](#usage)
     - [Debian Desktop Usage](#debian-desktop-sudo-usage)
     - [Debian Server Usage](#debian-server-sudo-usage)
@@ -11,14 +11,14 @@ A script to automate the setup of a new Debian based operating system, tuned to 
     - [Debian Desktop Features](#debian-desktop-features)
     - [Debian Server Features](#debian-server-features)
 
-## Prerequisites
+## Requirements
 
-1. Debian or Debian based operating system
-2. Gnome is required for desktop usage
-3. Access to terminal/shell where output is visible
-4. Terminal/shell user has sudo privileges
-5. `bash` & `curl` must be installed already
-6. Working internet connection
+- Debian or Debian based operating system
+- Gnome is required for desktop usage
+- Access to terminal/shell where output is visible
+- Terminal/shell user has sudo privileges
+- `bash` & `curl` must be installed already
+- Working internet connection
 
 ## Usage
 
