@@ -40,8 +40,8 @@ curl -fL \
 
 For Debian desktop systems `setup-system.sh` will do the following:
 
-1. Update & upgrade all `.deb` packages
-2. Install packages with `apt-get`
+1. Update & upgrade all packages with `apt-get`
+2. Install the following packages with `apt-get`
     - bash-completion
     - build-essential
     - checkinstall
@@ -129,8 +129,8 @@ For Debian desktop systems `setup-system.sh` will do the following:
 
 For Debian server systems `setup-server.sh` will do the following:
 
-1. Update & upgrade all `.deb` packages
-2. Install packages with `apt-get`
+1. Update & upgrade all packages with `apt-get`
+2. Install the following packages with `apt-get`
     - curl
     - fail2ban
     - git
