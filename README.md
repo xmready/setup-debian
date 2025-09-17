@@ -122,7 +122,7 @@ For Debian desktop systems `setup-system.sh` will do the following:
     - `dnsleaktest`
 12. Harden network security
     - Disable tcp timestamps
-    - Set default firewall policy
+    - Set default firewall policy with `ufw`
     - Enable `ufw`
 13. Reboot system after 60 seconds
 
