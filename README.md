@@ -153,3 +153,11 @@ For Debian server systems `setup-server.sh` will do the following:
     - `autoupgrade` (requires sudo)
     - `temps`
     - `dnsleaktest`
+7. Harden network security
+    - Disable tcp timestamps
+    - Set default firewall policy with `ufw`
+    - Allow incoming connections on port 22 with `ufw`
+    - Enable `ufw`
+    - Generate a new & strong ssh host key with `ssh-keygen`
+    - Install hardened ssh config file
+8. Reboot system after 60 seconds
