@@ -104,7 +104,7 @@ For Debian desktop systems `setup-system.sh` will do the following:
     - Install systemd unit files for running `rclone` as a service
     - Install dispatcher script so `rclone` runs when connected to the internet
 9. Autoremove and clean packages using `apt-get`
-10. Install verified Flatpak apps
+10. Install verified [Flatpak](https://flatpak.org) apps
     - Firefox
     - GIMP
     - GnuCash
