@@ -1,4 +1,4 @@
-# Setup System Debian
+# Setup Debian
 A script to automate the setup of a new Debian based operating system, tuned to my personal liking. Included are setup scripts for both Debian based desktops and servers.
 
 ## Table of Contents
