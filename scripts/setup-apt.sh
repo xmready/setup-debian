@@ -9,7 +9,22 @@
 # Non-root usage:
 #   curl -fL https://raw.githubusercontent.com/xmready/system-setup/main/scripts/setup-apt.sh | bash -
 
-echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
+set_flatpak_plugin() {
+  case "$XDG_CURRENT_DESKTOP" in
+    GNOME)
+      FLATPAK_PLUGIN="gnome-software-plugin-flatpak"
+      ;;
+    KDE)
+      FLATPAK_PLUGIN="plasma-discover-backend-flatpak"
+      ;;
+    *)
+      FLATPAK_PLUGIN="unknown-plugin"  # Default value if no match is found
+      ;;
+  esac
+}
+
+set_flatpak_plugin \
+&& echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
 && sudo apt-get update \
 && sudo apt-get upgrade -y \
 && sudo apt-get full-upgrade -y \
@@ -24,10 +39,10 @@ echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
   curl \
   fastfetch \
   flatpak \
+  "$FLATPAK_PLUGIN" \
   fprintd \
   fzf \
   git \
-  gnome-software-plugin-flatpak \
   gnupg \
   libpam-fprintd \
   lm-sensors \
