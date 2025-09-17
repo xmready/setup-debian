@@ -5,8 +5,8 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 
 - [Requirements](#requirements)
 - [Usage](#usage)
-    - [Debian Desktop Usage](#debian-desktop-sudo-usage)
-    - [Debian Server Usage](#debian-server-sudo-usage)
+    - [Debian Desktop Usage](#debian-desktop-usage)
+    - [Debian Server Usage](#debian-server-usage)
 - [Setup Features](#setup-features)
     - [Debian Desktop Setup Features](#debian-desktop-setup-features)
     - [Debian Server Setup Features](#debian-server-setup-features)
@@ -22,13 +22,13 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 
 ## Usage
 
-### Debian Desktop Sudo Usage
+### Debian Desktop Usage
 ```
 curl -fL \
    https://raw.githubusercontent.com/xmready/system-setup/main/setup-system.sh \
    | bash -
 ```
-### Debian Server Sudo Usage
+### Debian Server Usage
 ```
 curl -fL \
    https://raw.githubusercontent.com/xmready/system-setup/main/setup-server.sh \
