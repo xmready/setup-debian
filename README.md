@@ -14,10 +14,11 @@ A script to automate the setup of a new Debian based operating system, tuned to 
 ## Prerequisites
 
 1. Debian or Debian based operating system
-2. Access to terminal/shell where output is visible
-3. Terminal/shell user has sudo privileges
-4. `bash` & `curl` must be installed already
-5. Working internet connection
+2. Gnome is required for desktop usage
+3. Access to terminal/shell where output is visible
+4. Terminal/shell user has sudo privileges
+5. `bash` & `curl` must be installed already
+6. Working internet connection
 
 ## Usage
 
