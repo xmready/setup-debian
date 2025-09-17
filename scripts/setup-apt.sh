@@ -18,7 +18,9 @@ set_flatpak_plugin() {
       FLATPAK_PLUGIN="plasma-discover-backend-flatpak"
       ;;
     *)
+      echo "Error: Only Gnome and Plasma environments are supported: $XDG_CURRENT_DESKTOP" >&2
       FLATPAK_PLUGIN="unknown-plugin"  # Default value if no match is found
+      return 2
       ;;
   esac
 }
