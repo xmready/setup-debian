@@ -35,5 +35,6 @@ echo -e "\n$(tput setaf 3)disabling tcp timestamps\n$(tput sgr0)" \
 && sudo ssh-keygen -t ed25519 -f "$HOST_KEY" -N "" \
 && sudo curl -fLo "$SSH_HARDEN" "$SSHD_URL" \
 && sudo chmod 644 /etc/ssh/sshd_config.d/* \
+&& sudo systemctl reload sshd \
 && sudo -v \
 && echo -e "\n$(tput setaf 2)sshd hardened\n$(tput sgr0)"
