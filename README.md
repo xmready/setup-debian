@@ -8,8 +8,8 @@ A script to automate the setup of a new Debian based operating system, tuned to 
     - [Debian Desktop Usage](#debian-desktop-sudo-usage)
     - [Debian Server Usage](#debian-server-sudo-usage)
 - [What It Does](#what-it-does)
-    - [Debian Desktop Features](#debian-desktop-features)
-    - [Debian Server Features](#debian-server-features)
+    - [Debian Desktop Setup Features](#debian-desktop-setup-features)
+    - [Debian Server Setup Features](#debian-server-setup-features)
 
 ## Requirements
 
@@ -37,7 +37,7 @@ curl -fL \
 
 ## What It Does
 
-### Debian Desktop Features
+### Debian Desktop Setup Features
 
 For Debian desktop systems `setup-system.sh` will do the following:
 
@@ -126,7 +126,7 @@ For Debian desktop systems `setup-system.sh` will do the following:
     - Enable `ufw`
 13. Reboot system after 60 seconds
 
-### Debian Server Features
+### Debian Server Setup Features
 
 For Debian server systems `setup-server.sh` will do the following:
 
