@@ -25,8 +25,7 @@ set_flatpak_plugin() {
   esac
 }
 
-set_flatpak_plugin \
-&& echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
+echo -e "\n$(tput setaf 3)upgrading packages\n$(tput sgr0)" \
 && sudo apt-get update \
 && sudo apt-get upgrade -y \
 && sudo apt-get full-upgrade -y \
@@ -34,6 +33,7 @@ set_flatpak_plugin \
 && echo -e "\n$(tput setaf 2)packages upgraded\n$(tput sgr0)" \
 && sleep 3 \
 && echo -e "\n$(tput setaf 3)installing packages\n$(tput sgr0)" \
+&& set_flatpak_plugin \
 && sudo apt-get install -y \
   bash-completion \
   build-essential \
