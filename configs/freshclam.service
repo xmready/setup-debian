@@ -1,0 +1,18 @@
+[Unit]
+Description=freshclam update daemon
+After=network-online.target clamd.service
+Wants=network-online.target
+
+[Service]
+Type=forking
+RuntimeDirectory=clamav
+RuntimeDirectoryMode=0755
+LogsDirectory=clamav
+LogsDirectoryMode=0755
+ExecStartPre=/bin/sleep 30
+ExecStart=/usr/bin/freshclam -d -c 1 --config-file=/etc/clamav/freshclam.conf
+Restart=on-failure
+PIDFile=/run/clamav/freshclam.pid
+
+[Install]
+WantedBy=multi-user.target

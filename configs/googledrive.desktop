@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=googledrive
+Exec=/usr/local/bin/googledrive
+Terminal=false
+Type=Application
+StartupWMClass=googledrive
