@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+set -euo pipefail
+
+sudo systemctl status mnt-gdrive.service mnt-gdrive-crypt.service

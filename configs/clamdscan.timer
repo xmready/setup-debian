@@ -1,0 +1,10 @@
+[Unit]
+Description=clamdscan timer
+
+[Timer]
+OnCalendar=weekly
+Persistent=true
+Unit=clamdscan.service
+
+[Install]
+WantedBy=timers.target

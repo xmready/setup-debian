@@ -1,0 +1,17 @@
+[Unit]
+Description=clamonacc on-access scanner
+After=clamd.service
+Requires=clamd.service
+
+[Service]
+Type=simple
+TimeoutStartSec=90
+LogsDirectory=clamav
+LogsDirectoryMode=0755
+ExecStartPre=/bin/bash -c 'while [ ! -S /run/clamav/clamd.sock ]; do sleep 1; done'
+ExecStart=/usr/sbin/clamonacc -F --fdpass --config-file=/etc/clamav/clamd.conf
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

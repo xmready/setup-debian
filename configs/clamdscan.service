@@ -1,0 +1,11 @@
+[Unit]
+Description=clamdscan scanner
+After=clamd.service
+Requires=clamd.service
+
+[Service]
+Type=oneshot
+SuccessExitStatus=1
+ExecStartPre=/usr/local/sbin/clamav-startscan-alert.sh
+ExecStart=/usr/bin/clamdscan --multiscan --fdpass --infected /
+ExecStartPost=/usr/local/sbin/clamav-endscan-alert.sh

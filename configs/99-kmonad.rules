@@ -1,0 +1,1 @@
+ACTION=="add", KERNEL=="event*", SUBSYSTEM=="input", ATTRS{name}=="CORSAIR K100 AIR Keyboard", ENV{ID_INPUT_KEYBOARD}=="1", SYMLINK+="input/k100air", TAG+="systemd", ENV{SYSTEMD_WANTS}="kmonad@k100air.service"
