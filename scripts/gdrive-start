@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+sudo systemctl start mnt-gdrive.service \
+&& sleep 3 \
+&& sudo systemctl start mnt-gdrive-crypt.service \
+&& sleep 3 \
+&& rsync -a --delete /home/"$USER"/.gnupg/ /mnt/vault/backups/.gnupg \
+&& rsync -a --delete /home/"$USER"/.ssh/ /mnt/vault/backups/.ssh
