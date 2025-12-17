@@ -1,0 +1,41 @@
+#!/usr/bin/bash
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; printf '%s\n' "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+
+info 'backing up vault files...' \
+&& rclone bisync "$HOME" vault:backups/home \
+  --include "{Desktop,Documents,Music,Pictures,Videos}/**" \
+  --include "{accounting,keepass,monero,sparrow}/**" \
+  --include "{.ssh,.gnupg}/**" \
+  --include ".config/rclone/**" \
+  --include "/.git*" \
+  --include "/.bash_aliases" \
+  --create-empty-src-dirs \
+  --resilient \
+  --recover \
+  --max-lock 2m \
+  --conflict-resolve newer \
+  --metadata \
+  --verbose \
+  --progress \
+  --fix-case \
+&& success 'vault files backed up' \
+&& info 'starting rclone gdrive services...' \
+&& sudo systemctl start mnt-gdrive.service \
+&& sleep 2 \
+&& sudo systemctl start mnt-gdrive-crypt.service \
+&& sleep 2 \
+&& sudo systemctl status mnt-gdrive.service mnt-gdrive-crypt.service \
+&& success 'rclone gdrive services started'

@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+sudo systemctl stop mnt-gdrive-crypt.service \
+&& sleep 10 \
+&& sudo systemctl stop mnt-gdrive.service

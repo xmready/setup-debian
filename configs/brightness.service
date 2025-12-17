@@ -1,0 +1,11 @@
+[Unit]
+Description=Saving screen brightness
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/brightness start
+
+[Install]
+WantedBy=shutdown.target

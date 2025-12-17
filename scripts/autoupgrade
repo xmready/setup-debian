@@ -1,0 +1,62 @@
+#!/usr/bin/bash
+
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/setup-debian
+#
+# Purpose:
+#   A script to update, upgrade, and full-upgrade using apt
+#
+# Usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/command-desktop-autoupgrade.sh | bash -
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; printf '%s\n' "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+
+get_latest_release() {
+  curl --fail --silent "https://api.github.com/repos/$1/releases/latest" |
+  grep tag_name |
+  sed -E 's/.*"([^"]+)".*/\1/'
+}
+
+nvm_version="$(get_latest_release nvm-sh/nvm)" || { err "failed to get nvm version"; exit 1; }
+nvm_url="https://raw.githubusercontent.com/nvm-sh/nvm/${nvm_version}/install.sh"
+
+info 'upgrading apt...' \
+&& sudo apt-get update \
+&& sudo apt-get upgrade --assume-yes \
+&& sudo apt-get full-upgrade --assume-yes \
+&& success 'apt upgraded' \
+&& sleep 3 \
+&& info 'upgrading rclone...' \
+&& sudo rclone selfupdate --package deb \
+&& success 'rclone upgraded' \
+&& sleep 3 \
+&& info 'cleaning apt...' \
+&& sudo apt-get --assume-yes autoremove \
+&& sudo apt-get --assume-yes autoclean \
+&& success 'apt cleaned' \
+&& sleep 3 \
+&& info 'upgrading flatpaks...' \
+&& flatpak update --assumeyes \
+&& success 'flatpaks upgraded' \
+&& sleep 3 \
+&& info 'upgrading nvm...' \
+&& curl --fail --location "$nvm_url" | bash - \
+&& [ -s "$NVM_DIR/nvm.sh" ] \
+&& \. "$NVM_DIR/nvm.sh" \
+&& nvm install --reinstall-packages-from=node node \
+&& success 'nvm upgraded' \
+&& info 'upgrading opencode...' \
+&& opencode upgrade \
+&& success 'opencode upgraded'
