@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; echo "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; echo "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; echo "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+
+vault_path="/mnt/vault"
+backups_path="${vault_path}/backups"
+
+info 'starting rclone gdrive services...' \
+&& sudo systemctl start mnt-gdrive.service \
+&& sleep 3 \
+&& sudo systemctl start mnt-gdrive-crypt.service \
+&& sudo systemctl status mnt-gdrive.service mnt-gdrive-crypt.service \
+&& success 'rclone gdrive services started' \
+&& info 'backing up vault files...' \
+&& sleep 3 \
+&& rsync -a --delete "${HOME}/.gnupg/" "${backups_path}/.gnupg" \
+&& rsync -a --delete "${HOME}/.ssh/" "${backups_path}/.ssh" \
+&& rsync -a "${HOME}/.gitconfig" "${backups_path}/git/.gitconfig" \
+&& rsync -a "${HOME}/.gitignore_global" "${backups_path}/git/.gitignore_global" \
+&& rsync -a "${HOME}/.bash_aliases" "${backups_path}/bash/.bash_aliases" \
+&& rsync -a "${vault_path}/keepass/DMardyks.kdbx" "${HOME}/KeePass/DMardyks.kdbx" \
+&& success 'vault files backed up'
