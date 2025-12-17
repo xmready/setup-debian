@@ -1,0 +1,7 @@
+Types: deb
+URIs: https://updates.signal.org/desktop/apt
+Suites: xenial
+Components: main
+Enabled: yes
+Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
+Architectures: architecture

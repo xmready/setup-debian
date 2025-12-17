@@ -1,0 +1,26 @@
+(defcfg
+  input  (device-file "device_file")
+  output (uinput-sink "kmonad")
+  fallthrough true
+  allow-cmd false)
+
+(defsrc
+  esc capslock h j k l lsft
+)
+
+(defalias
+  capsaction (tap-next esc (layer-toggle arrows))
+  lshift (around lsft (layer-toggle shift))
+)
+
+(deflayer base
+  esc @capsaction h j k l @lshift
+)
+
+(deflayer arrows
+  _ _ left down up right _
+)
+
+(deflayer shift
+  _ capslock _ _ _ _ _
+)

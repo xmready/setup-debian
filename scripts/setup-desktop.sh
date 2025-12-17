@@ -1,0 +1,114 @@
+#!/usr/bin/bash
+
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/setup-debian
+#
+# Purpose:
+#   A script to setup a new debian based desktop/laptop
+#
+# Usage:
+#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-desktop.sh | bash -
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; printf '%s\n' "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+die() { err "$@"; exit 1; }
+
+tmp_path='/tmp'
+
+cleanup() {
+  local status=$?
+  if [[ "$status" -eq 0 ]]; then
+    rm -f -- "$tmp_path"/setup-*.sh "$tmp_path"/SHA256SUMS_*
+  else
+    rm -f -- "$tmp_path"/setup-desktop-*.sh "$tmp_path"/setup-apt*.sh
+  fi
+}
+
+main() {
+  [[ "$EUID" -ne 0 ]] || die 'run as your normal sudo user, not root'
+
+  sudo --validate || die 'sudo authentication failed'
+
+  info 'downloading setup files...'
+
+  remote_url='https://github.com'
+  remote_raw_url='https://raw.githubusercontent.com'
+  setup_remote_name='xmready/setup-debian'
+  setup_desktop_filename='setup-desktop.sh'
+  setup_desktop_path="${tmp_path}/${setup_desktop_filename}"
+  version=''
+  setup_scripts_url="${remote_raw_url}/${setup_remote_name}/${version}/scripts"
+  setup_desktop_url="${setup_scripts_url}/${setup_desktop_filename}"
+
+  if [[ ! -f "$setup_desktop_path" ]]; then
+    curl --fail --location --show-error --silent --output "$setup_desktop_path" "$setup_desktop_url" \
+      || die "download failed for ${setup_desktop_url}"
+  fi
+
+  setup_files=(
+    'setup-desktop-apt.sh'
+    'setup-desktop-shell.sh'
+    'setup-desktop-tor.sh'
+    'setup-desktop-signal.sh'
+    'setup-desktop-vim.sh'
+    'setup-desktop-rclone.sh'
+    'setup-desktop-homebrew.sh'
+    'setup-desktop-clamav.sh'
+    'setup-desktop-nvm.sh'
+    'setup-desktop-ghcup.sh'
+    'setup-desktop-kmonad.sh'
+    'setup-desktop-flatpak.sh'
+    'setup-desktop-opencode.sh'
+    'setup-desktop-commands.sh'
+    'setup-desktop-harden.sh'
+    'setup-apt-clean.sh'
+  )
+
+  trap cleanup EXIT
+
+  for file in "${setup_files[@]}"; do
+    outfile="${tmp_path}/${file}"
+
+    curl --fail --location --show-error --silent --output "$outfile" "${setup_scripts_url}/${file}" \
+      || die "download failed for ${file}"
+  done
+
+  success 'setup files downloaded'
+
+  sha256sums_filename='SHA256SUMS_DESKTOP'
+  sha256sums_path="${tmp_path}/${sha256sums_filename}"
+  sha256sums_url="${remote_url}/${setup_remote_name}/releases/download/${version}/${sha256sums_filename}"
+
+  if [[ ! -f "$sha256sums_path" ]]; then
+    curl --fail --location --show-error --silent --output "$sha256sums_path" "$sha256sums_url" \
+      || die "download failed for ${sha256sums_url}"
+  fi
+
+  cd "$tmp_path" || die "failed to change working directory to ${tmp_path}"
+
+  sha256sum --check --quiet "$sha256sums_path" || die 'checksum verification failed'
+  success 'checksums verified'
+
+  for file in "${setup_files[@]}"; do
+    runfile="${tmp_path}/${file}"
+
+    bash "$runfile" "$version" || die "${runfile} failed"
+  done
+
+  sudo shutdown --reboot +10 || die 'system reboot failed'
+  info 'SYSTEM WILL REBOOT IN 10 MINUTES'
+  exit 0
+}
+
+main "$@"

@@ -1,0 +1,86 @@
+#!/usr/bin/bash
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; printf '%s\n' "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+die() { err "$@"; exit 1; }
+
+choose_resync_mode() {
+  local choice
+
+  info 'make both Path1 and Path2 filesystems contain a matching superset of all files.'
+  info 'when a file exists on both sides but differs, which copy should win?'
+  printf '%s\n' \
+    '' \
+    '  1) the newer copy  - use on your usual computer when bisync says a resync is needed' \
+    '  2) the vault       - use on a new computer, so a fresh install cannot overwrite your backup' \
+    '  3) this computer   - use only if you know the files on this computer are the correct ones' \
+    '  4) cancel' \
+    ''
+
+  while true; do
+    read -r -p "${bold}choose 1-4: ${reset}" choice || return 1
+
+    case "$choice" in
+      1) resync_mode='newer'; resync_label='the newer copy'; return 0 ;;
+      2) resync_mode='path2'; resync_label='the vault'; return 0 ;;
+      3) resync_mode='path1'; resync_label='this computer'; return 0 ;;
+      4) return 1 ;;
+      *) err 'enter 1, 2, 3 or 4' ;;
+    esac
+  done
+}
+
+resync_vault() {
+  rclone bisync "$HOME" vault:backups/home \
+    --include '{Desktop,Documents,Music,Pictures,Videos}/**' \
+    --include '{accounting,keepass,monero,sparrow}/**' \
+    --include '{.ssh,.gnupg}/**' \
+    --include '.config/rclone/**' \
+    --include '/.git*' \
+    --include '/.bash_aliases' \
+    --create-empty-src-dirs \
+    --resilient \
+    --recover \
+    --max-lock 2m \
+    --metadata \
+    --verbose \
+    --fix-case \
+    --resync-mode "$resync_mode" \
+    "$@"
+}
+
+main() {
+  local answer
+
+  if ! choose_resync_mode; then
+    info 'resync cancelled'
+    exit 0
+  fi
+
+  info "previewing vault resync (${resync_label} wins)..." \
+    && resync_vault --dry-run
+
+  read -r -p "${bold}run the resync for real? [y/N] ${reset}" answer || answer=''
+
+  if [[ "$answer" != [yY] ]]; then
+    info 'resync cancelled'
+    exit 0
+  fi
+
+  info 'resyncing vault files...' \
+    && resync_vault --progress \
+    && success 'vault files resynced'
+}
+
+main "$@"
