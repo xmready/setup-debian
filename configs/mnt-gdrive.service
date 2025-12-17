@@ -1,0 +1,18 @@
+[Unit]
+Description=rclone mount gdrive
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+Restart=on-abort
+RestartSec=5
+User=
+Group=
+ExecStart=/usr/bin/rclone mount gdrive: /mnt/gdrive --vfs-cache-mode full
+ExecStop=/bin/fusermount -uz /mnt/gdrive
+TimeoutStopSec=30
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

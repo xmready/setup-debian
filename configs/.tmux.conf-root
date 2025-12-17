@@ -1,0 +1,103 @@
+# ~/.tmux.conf
+
+# ============================================
+# ESSENTIAL SETTINGS
+# ============================================
+
+# Fix Vim ESC delay
+set -sg escape-time 0
+
+# Increase scrollback buffer
+set -g history-limit 50000
+
+# Start windows and panes at 1, not 0
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Enable mouse support
+set -g mouse on
+
+# Enable focus events for vim autoread
+set -g focus-events on
+
+# Aggressive resize for multi-client
+setw -g aggressive-resize on
+
+# ============================================
+# KEY BINDINGS
+# ============================================
+
+# Change prefix to Ctrl+s (more ergonomic)
+unbind C-b
+set -g prefix C-s
+bind C-s send-prefix
+
+# Reload config
+bind r source-file ~/.tmux.conf \; display "Config reloaded!"
+
+# Better command line opening
+bind Space command-prompt
+bind : next-layout
+
+# Better pane splitting (and keep current path)
+bind t split-window -v -c "#{pane_current_path}"
+bind T split-window -h -c "#{pane_current_path}"
+bind c new-window -c "#{pane_current_path}"
+
+# Smart pane switching with awareness of Vim splits.
+# See: https://github.com/christoomey/vim-tmux-navigator
+vim_pattern='(\S+/)?g?\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?'
+is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
+    | grep -iqE '^[^TXZ ]+ +${vim_pattern}$'"
+bind-key -n 'Left' if-shell "$is_vim" 'send-keys Left'  'select-pane -L'
+bind-key -n 'Down' if-shell "$is_vim" 'send-keys Down'  'select-pane -D'
+bind-key -n 'Up' if-shell "$is_vim" 'send-keys Up'  'select-pane -U'
+bind-key -n 'Right' if-shell "$is_vim" 'send-keys Right'  'select-pane -R'
+
+bind-key -T copy-mode-vi 'Left' select-pane -L
+bind-key -T copy-mode-vi 'Down' select-pane -D
+bind-key -T copy-mode-vi 'Up' select-pane -U
+bind-key -T copy-mode-vi 'Right' select-pane -R
+
+# Vim-style pane resizing
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# Synchronize panes
+bind S setw synchronize-panes
+
+# ============================================
+# APPEARANCE
+# ============================================
+
+#Status line
+set -g status-interval 1
+set -g status-position top
+set -g status-left-length 30
+set -g status-right-length 90
+
+# Status line content
+status_ip="#(ip addr | grep 'state UP' -A 3 | awk '/inet /{print $2}')"
+status_mem="#(free -hm | awk '/Mem/{print $3\"/\"$2}')"
+status_temp="#(sensors -f | awk '/CPU/{print $2}')"
+status_uptime="Up #(awk '{s=int($1); d=s/86400; s%=86400; h=s/3600; s%=3600; m=s/60; printf(\"%%dd %%dh %%dm\", d,h,m)}' /proc/uptime)"
+status_date="%a %b %d"
+status_time="%I:%M %p"
+set -g status-left " #{server_sessions} | #S |"
+set -g status-right "| ${status_ip} | ${status_mem} | ${status_temp} | ${status_uptime} | ${status_date} | ${status_time} "
+
+# Window status
+setw -g window-status-format ' #I:#W '
+setw -g window-status-current-format ' #I:#W '
+
+# ============================================
+# COPY MODE
+# ============================================
+
+# Use vi keys
+setw -g mode-keys vi
+
+# Vi-style copy bindings
+bind -T copy-mode-vi v send -X begin-selection
