@@ -1,0 +1,9 @@
+#!/bin/sh -e
+# Sript to run when connectivity is full
+
+if [ "$CONNECTIVITY_STATE" = "FULL" ]; then
+  systemctl start mnt-gdrive.service
+  systemctl start mnt-gdrive-crypt.service
+fi
+
+exit 0
