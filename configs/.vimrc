@@ -156,6 +156,7 @@ vnoremap <Space> :
 cnoremap <C-A> <Home>
 cnoremap <C-F> <Right>
 cnoremap <C-B> <Left>
+cnoremap <C-D> <Del>
 # }}}
 
 # Global Terminal Maps Non-Recursive {{{
