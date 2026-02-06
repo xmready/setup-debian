@@ -152,6 +152,12 @@ vnoremap <silent> <C-K> :move '<-2<CR>gv=gv
 vnoremap <Space> :
 # }}}
 
+# Global Command-Line Maps Non-Recursive {{{
+cnoremap <C-A> <Home>
+cnoremap <C-F> <Right>
+cnoremap <C-B> <Left>
+# }}}
+
 # Global Terminal Maps Non-Recursive {{{
 tnoremap <Down> <C-W>j
 tnoremap <Left> <C-W>h
