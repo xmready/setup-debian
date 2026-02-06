@@ -339,7 +339,7 @@ g:ale_fix_on_save = 1
 g:ale_fixers = {
     '*': ['remove_trailing_lines', 'trim_whitespace'],
     'markdown': ['remove_trailing_lines'],
-    }
+}
 
 nnoremap yoa :ALEToggle<CR>
 nmap <silent> <C-P> <Plug>(ale_previous_wrap)
@@ -359,7 +359,16 @@ nnoremap <Leader>S :Gwrite<CR>
 # Fuzzbox {{{
 g:fuzzbox_mappings = 0
 g:fuzzbox_respect_gitignore = 0
+g:fuzzbox_keymaps = {
+    'menu_up': ["\<C-p>", "\<C-k>"],
+    'menu_down': ["\<C-n>", "\<C-j>"],
+    'cursor_begining': ["\<C-a>", "\<Home>"],
+    'preview_scroll_up': ["\<Up>"],
+    'preview_scroll_down': ["\<Down>"],
+    'delete_all': ["\<C-u>"],
+}
 
+nnoremap <C-F> :FuzzyGrep<CR>
 nnoremap <C-R> :FuzzyCmdHistory<CR>
 nnoremap <Leader><Space> :FuzzyCommands<CR>
 nnoremap <Leader>/ :FuzzyInBuffer<CR>
