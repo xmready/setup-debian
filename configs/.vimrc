@@ -385,6 +385,11 @@ nnoremap <Leader>e :FuzzyFiles<CR>
 nnoremap <Leader>E :FuzzyGitFiles<CR>
 nnoremap <Leader>m :FuzzyMarks<CR>
 nnoremap <Leader>M :FuzzyMru<CR>
+
+augroup FuzzboxResize
+    autocmd!
+    autocmd VimEnter,VimResized * g:fuzzbox_window_defaults = &columns > 120 ? {} : { 'width': 0.9, 'height': 0.7, 'preview': 0 }
+augroup END
 # }}}
 
 # LimeLight {{{
