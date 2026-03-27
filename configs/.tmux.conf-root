@@ -71,7 +71,7 @@ bind S setw synchronize-panes
 #Status line
 set -g status-interval 1
 set -g status-position top
-set -g status-left-length 20
+set -g status-left-length 30
 set -g status-right-length 90
 
 # Status line content
