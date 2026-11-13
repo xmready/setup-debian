@@ -47,7 +47,7 @@ main() {
   setup_remote_name='xmready/setup-debian'
   setup_desktop_filename='setup-desktop.sh'
   setup_desktop_path="${tmp_path}/${setup_desktop_filename}"
-  version='v1.0.0'
+  version='v1.0.1'
   setup_scripts_url="${remote_raw_url}/${setup_remote_name}/${version}/scripts"
   setup_desktop_url="${setup_scripts_url}/${setup_desktop_filename}"
 

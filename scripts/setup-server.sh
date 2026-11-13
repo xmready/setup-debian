@@ -47,7 +47,7 @@ main() {
   setup_remote_name='xmready/setup-debian'
   setup_server_filename='setup-server.sh'
   setup_server_path="${tmp_path}/${setup_server_filename}"
-  version='v1.0.0'
+  version='v1.0.1'
   setup_scripts_url="${remote_raw_url}/${setup_remote_name}/${version}/scripts"
   setup_server_url="${setup_scripts_url}/${setup_server_filename}"
 
