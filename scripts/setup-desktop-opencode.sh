@@ -27,7 +27,7 @@ die() { err "$@"; exit 1; }
 main() {
   [[ "$EUID" -ne 0 ]] || die 'run as your normal user, not root'
 
-  opencode_install_url='https://opencode.ai/install'
+  opencode_install_url='https://opencode.ai/v2/install'
   opencode_install="$(curl -fsSL "$opencode_install_url")" \
     || die 'failed to download opencode install script'
   remote_raw_url='https://raw.githubusercontent.com'
