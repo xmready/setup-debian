@@ -42,6 +42,7 @@ main() {
 
   mapfile -t desktop_files < <(git ls-files 'setup-desktop*' 'setup-apt*')
   mapfile -t server_files < <(git ls-files 'setup-server*' 'setup-apt*')
+  mapfile -t setup_files < <(git ls-files 'setup-*')
 
   (( ${#desktop_files[@]} > 0 && ${#server_files[@]} > 0 )) \
     || die 'no setup files found to checksum'
@@ -79,6 +80,24 @@ main() {
     || die 'failed to sign checksums'
 
   success "checksum and signature files created in ${tmp_path}"
+
+  info 'copying setup files...'
+
+  cp -- "${setup_files[@]}" "$tmp_path" \
+    || die 'failed to copy setup files'
+
+  success "setup files copied to ${tmp_path}"
+
+  info 'verifying checksums and signatures...'
+
+  cd "$tmp_path" \
+    && sha256sum --check "$sha256sums_desktop_path" \
+    && sha256sum --check "$sha256sums_server_path" \
+    && gpg --verify "${sha256sums_desktop_path}.sign" "$sha256sums_desktop_path" \
+    && gpg --verify "${sha256sums_server_path}.sign" "$sha256sums_server_path" \
+    || die 'failed to verify checksums'
+
+  success 'checksums and signatures verified'
 }
 
 main "$@"
