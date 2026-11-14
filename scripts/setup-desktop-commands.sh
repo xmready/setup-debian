@@ -33,7 +33,7 @@ main() {
   version="${1:-main}"
   setup_scripts_url="${remote_raw_url}/${setup_remote_name}/${version}/scripts"
   commands=(
-    'autoupgrade'
+    'autoupgrade-desktop'
     'dnsleaktest'
     'gdrive-backup'
     'gdrive-check'

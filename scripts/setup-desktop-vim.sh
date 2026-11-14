@@ -77,6 +77,8 @@ main() {
       default-jdk \
       golang \
       mono-complete \
+      nodejs \
+      npm \
       python3-dev \
       vim-nox \
     || die 'failed to install Vim'

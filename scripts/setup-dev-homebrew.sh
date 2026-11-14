@@ -7,7 +7,7 @@
 #   A script to install and configure Homebrew
 #
 # Usage:
-#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-desktop-homebrew.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-dev-homebrew.sh | bash -
 
 set -euo pipefail
 

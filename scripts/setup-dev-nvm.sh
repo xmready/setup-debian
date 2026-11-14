@@ -7,7 +7,7 @@
 #   A script to install and configure nvm-sh and nodejs
 #
 # Usage:
-#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-desktop-nvm.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-dev-nvm.sh | bash -
 
 set -euo pipefail
 

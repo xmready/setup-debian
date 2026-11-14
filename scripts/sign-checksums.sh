@@ -29,6 +29,7 @@ main() {
   scripts_path="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
   tmp_path='/tmp'
   sha256sums_desktop_path="${tmp_path}/SHA256SUMS_DESKTOP"
+  sha256sums_dev_path="${tmp_path}/SHA256SUMS_DEV"
   sha256sums_server_path="${tmp_path}/SHA256SUMS_SERVER"
   key_fingerprint='31310B484B30ADABE8527D0E17AF13F5D2F5013A'
 
@@ -41,14 +42,15 @@ main() {
     || die 'repo has uncommitted or untracked files, commit them before signing'
 
   mapfile -t desktop_files < <(git ls-files 'setup-desktop*' 'setup-apt*')
+  mapfile -t dev_files < <(git ls-files 'setup-dev*' 'setup-apt*')
   mapfile -t server_files < <(git ls-files 'setup-server*' 'setup-apt*')
   mapfile -t setup_files < <(git ls-files 'setup-*')
 
-  (( ${#desktop_files[@]} > 0 && ${#server_files[@]} > 0 )) \
+  (( ${#desktop_files[@]} > 0 && ${#dev_files[@]} > 0 && ${#server_files[@]} > 0 )) \
     || die 'no setup files found to checksum'
 
-  git ls-files --error-unmatch setup-desktop.sh setup-server.sh > /dev/null 2>&1 \
-    || die 'setup-desktop.sh or setup-server.sh is missing from the repo'
+  git ls-files --error-unmatch setup-desktop.sh setup-dev.sh setup-server.sh > /dev/null 2>&1 \
+    || die 'setup-desktop.sh, setup-dev.sh or setup-server.sh is missing from the repo'
 
   gpg --list-secret-keys "$key_fingerprint" > /dev/null \
     || die "private key ${key_fingerprint} not found"
@@ -56,6 +58,7 @@ main() {
   info 'creating checksums...'
 
   sha256sum -- "${desktop_files[@]}" > "$sha256sums_desktop_path" \
+    && sha256sum -- "${dev_files[@]}" > "$sha256sums_dev_path" \
     && sha256sum -- "${server_files[@]}" > "$sha256sums_server_path" \
     || die 'failed to create checksums'
 
@@ -70,6 +73,13 @@ main() {
       --yes \
       --output "${sha256sums_desktop_path}.sign" \
       "$sha256sums_desktop_path" \
+    && gpg \
+      --local-user "$key_fingerprint" \
+      --detach-sign \
+      --armor \
+      --yes \
+      --output "${sha256sums_dev_path}.sign" \
+      "$sha256sums_dev_path" \
     && gpg \
       --local-user "$key_fingerprint" \
       --detach-sign \
@@ -92,8 +102,10 @@ main() {
 
   cd "$tmp_path" \
     && sha256sum --check "$sha256sums_desktop_path" \
+    && sha256sum --check "$sha256sums_dev_path" \
     && sha256sum --check "$sha256sums_server_path" \
     && gpg --verify "${sha256sums_desktop_path}.sign" "$sha256sums_desktop_path" \
+    && gpg --verify "${sha256sums_dev_path}.sign" "$sha256sums_dev_path" \
     && gpg --verify "${sha256sums_server_path}.sign" "$sha256sums_server_path" \
     || die 'failed to verify checksums'
 

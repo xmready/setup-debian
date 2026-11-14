@@ -31,6 +31,7 @@ main() {
   scripts_path="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
   setup_files=(
     'setup-desktop.sh'
+    'setup-dev.sh'
     'setup-server.sh'
   )
   version_pattern="^([[:space:]]*)version='[^']*'$"

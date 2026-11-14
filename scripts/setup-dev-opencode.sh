@@ -7,7 +7,7 @@
 #   A script to install opencode
 #
 # Usage:
-#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-desktop-opencode.sh | bash -
+#   curl -fL https://raw.githubusercontent.com/xmready/setup-debian/main/scripts/setup-dev-opencode.sh | bash -
 
 set -euo pipefail
 

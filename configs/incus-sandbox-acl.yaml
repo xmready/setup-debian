@@ -1,0 +1,20 @@
+name: sandbox
+description: sandbox VMs - internet only
+config: {}
+egress:
+- action: reject
+  description: home network, other VMs, VPNs, link-local, multicast (host bridge address excluded)
+  destination: ipv4_reject_ranges
+  state: enabled
+- action: reject
+  description: IPv6 private ranges (host bridge address excluded)
+  destination: ipv6_reject_ranges
+  state: enabled
+- action: allow
+  description: everything else (internet; the host itself is limited by ufw)
+  state: enabled
+ingress:
+- action: allow
+  description: replies from the host (DHCP, router advertisements, DNS)
+  source: host_addresses
+  state: enabled

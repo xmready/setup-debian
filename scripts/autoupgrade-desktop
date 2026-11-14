@@ -4,7 +4,7 @@
 #   https://github.com/xmready/setup-debian
 #
 # Purpose:
-#   A script to upgrade apt, rclone, flatpak, nvm, Homebrew, ghcup, cabal and opencode
+#   A script to upgrade apt, rclone, flatpak, ghcup and kmonad on the desktop host
 
 set -euo pipefail
 
@@ -21,30 +21,11 @@ info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
 err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
 die() { err "$@"; exit 1; }
 
-get_latest_release() {
-  curl --fail --silent "https://api.github.com/repos/$1/releases/latest" |
-  grep --max-count=1 '"tag_name":' |
-  sed -E 's/.*"tag_name": *"([^"]+)".*/\1/'
-}
-
-upgrade_node() {
-  local node_old
-
-  node_old="$(node --version)" \
-    && nvm install --lts \
-    && if [[ "$(node --version)" != "$node_old" ]]; then
-         nvm reinstall-packages "$node_old" \
-           && nvm uninstall "$node_old"
-       fi
-}
-
 main() {
   [[ "$EUID" -ne 0 ]] || die 'run as your normal sudo user, not root'
 
   sudo --validate || die 'sudo authentication failed'
 
-  remote_raw_url='https://raw.githubusercontent.com'
-  nvm_remote_name='nvm-sh/nvm'
   failed=()
 
   info 'upgrading apt...' \
@@ -70,22 +51,6 @@ main() {
     && success 'flatpaks upgraded' \
     || failed+=('flatpak')
 
-  info 'upgrading nvm...' \
-    && nvm_version="$(get_latest_release "$nvm_remote_name")" \
-    && curl --fail --silent --show-error --location "${remote_raw_url}/${nvm_remote_name}/${nvm_version}/install.sh" | bash - \
-    && [[ -s "${NVM_DIR}/nvm.sh" ]] \
-    && \. "$NVM_DIR/nvm.sh" \
-    && upgrade_node \
-    && nvm cache clear \
-    && success 'nvm upgraded' \
-    || failed+=('nvm')
-
-  info 'upgrading homebrew formulae...' \
-    && brew update \
-    && brew upgrade --no-ask \
-    && success 'homebrew formulae upgraded' \
-    || failed+=('homebrew')
-
   info 'upgrading ghcup...' \
     && ghcup upgrade \
     && ghcup install ghc recommended \
@@ -106,11 +71,6 @@ main() {
     && sudo systemctl try-restart 'kmonad@*.service' \
     && success 'kmonad upgraded' \
     || failed+=('kmonad')
-
-  info 'upgrading opencode...' \
-    && opencode upgrade \
-    && success 'opencode upgraded' \
-    || failed+=('opencode')
 
   (( ${#failed[@]} == 0 )) || die "upgrades failed: ${failed[*]}"
   success 'all upgrades complete'
