@@ -340,7 +340,9 @@ For Debian development VMs `setup-dev.sh` will do the following:
 8. Install and configure [OpenCode](https://opencode.ai)
     - Install latest `opencode` version to current user
     - Download `tui.json` config file to `~/.config/opencode/`
-9. Install custom commands in `~/bin/`
+9. Install [Claude Code](https://code.claude.com)
+    - Install latest `claude` version to current user with the native installer
+10. Install custom commands in `~/bin/`
     - `autoupgrade-dev` (requires sudo)
-10. Autoremove and clean packages using `apt-get`
-11. Reboot system after 10 minutes
+11. Autoremove and clean packages using `apt-get`
+12. Reboot system after 10 minutes

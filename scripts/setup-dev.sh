@@ -63,6 +63,7 @@ main() {
     'setup-dev-homebrew.sh'
     'setup-dev-nvm.sh'
     'setup-dev-opencode.sh'
+    'setup-dev-claude-code.sh'
     'setup-dev-commands.sh'
     'setup-apt-clean.sh'
   )

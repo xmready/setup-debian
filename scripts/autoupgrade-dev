@@ -4,7 +4,8 @@
 #   https://github.com/xmready/setup-debian
 #
 # Purpose:
-#   A script to upgrade apt, nvm, node, Homebrew and opencode in a development VM
+#   A script to upgrade apt, nvm, node, Homebrew, opencode and Claude Code in a
+#   development VM
 
 set -euo pipefail
 
@@ -87,6 +88,11 @@ main() {
     && opencode upgrade \
     && success 'opencode upgraded' \
     || failed+=('opencode')
+
+  info 'upgrading claude code...' \
+    && claude update \
+    && success 'claude code upgraded' \
+    || failed+=('claude code')
 
   (( ${#failed[@]} == 0 )) || die "upgrades failed: ${failed[*]}"
   success 'all upgrades complete'
