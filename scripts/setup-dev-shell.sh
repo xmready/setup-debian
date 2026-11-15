@@ -79,7 +79,7 @@ main() {
   version="${1:-main}"
   setup_configs_url="${remote_raw_url}/${setup_remote_name}/${version}/configs"
   tmux_conf_filename='.tmux.conf'
-  tmux_conf_root_url="${setup_configs_url}/${tmux_conf_filename}-root"
+  tmux_conf_dev_url="${setup_configs_url}/${tmux_conf_filename}-dev"
   tmux_conf_path="${HOME}/${tmux_conf_filename}"
   tmux_conf_root_path="/root/${tmux_conf_filename}"
 
@@ -102,12 +102,12 @@ main() {
       --fail \
       --location \
       --output "$tmux_conf_path" \
-      "$tmux_conf_root_url" \
+      "$tmux_conf_dev_url" \
     && sudo curl \
       --fail \
       --location \
       --output "$tmux_conf_root_path" \
-      "$tmux_conf_root_url" \
+      "$tmux_conf_dev_url" \
     || die 'failed to download tmux config files'
 
   success 'tmux config files downloaded'
