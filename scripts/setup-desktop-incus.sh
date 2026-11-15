@@ -84,6 +84,49 @@ has_running_instances() {
   sudo incus list --format csv --columns s | grep --quiet --line-regexp 'RUNNING'
 }
 
+has_instance() {
+  sudo incus info "$1" > /dev/null 2>&1
+}
+
+get_vm_cpus() {
+  local max_cpus="$1" host_cpus
+
+  host_cpus="$(nproc)" \
+    && (( host_cpus > 1 )) \
+    && printf '%s\n' "$(( host_cpus / 2 < max_cpus ? host_cpus / 2 : max_cpus ))"
+}
+
+get_vm_memory_mib() {
+  local max_mib="$1" host_mib
+
+  host_mib="$(awk '/^MemTotal:/ {print int($2 / 1024)}' /proc/meminfo)" \
+    && (( host_mib > 1 )) \
+    && printf '%s\n' "$(( host_mib / 2 < max_mib ? host_mib / 2 : max_mib ))"
+}
+
+vm_exec() {
+  local name="$1"
+
+  shift
+  sudo incus exec "$name" -- "$@" < /dev/null
+}
+
+wait_for_agent() {
+  local name="$1" timeout="$2" start="$SECONDS"
+
+  until vm_exec "$name" true > /dev/null 2>&1; do
+    (( SECONDS - start < timeout )) || return 1
+    sleep 2
+  done
+}
+
+delete_partial_vm() {
+  if has_instance "$1"; then
+    info "deleting the partial ${1} VM..."
+    sudo incus delete --force "$1"
+  fi
+}
+
 main() {
   [[ "$EUID" -ne 0 ]] || die 'run as your normal sudo user, not root'
 
@@ -105,6 +148,12 @@ main() {
   vm_disk_size='30GiB'
   ipv4_private_ranges='10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,169.254.0.0/16,224.0.0.0/4'
   ipv6_private_ranges='fc00::/7'
+  vm_name='dev-base'
+  vm_image='images:debian/trixie'
+  vm_user='dev'
+  vm_max_cpus=4
+  vm_max_memory_mib=8192
+  vm_agent_timeout=120
 
   info 'installing incus...'
 
@@ -237,6 +286,33 @@ main() {
     || die 'failed to configure ufw for incus'
 
   success 'ufw configured for incus'
+
+  info "setting up ${vm_name} VM..."
+
+  if ! has_instance "$vm_name"; then
+    vm_cpus="$(get_vm_cpus "$vm_max_cpus")" \
+      && vm_memory_mib="$(get_vm_memory_mib "$vm_max_memory_mib")" \
+      || die 'failed to get the host CPUs and memory'
+
+    trap 'delete_partial_vm "$vm_name"' EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
+
+    sudo incus launch "$vm_image" "$vm_name" --vm \
+        --config limits.cpu="$vm_cpus" \
+        --config limits.memory="${vm_memory_mib}MiB" < /dev/null \
+      && wait_for_agent "$vm_name" "$vm_agent_timeout" \
+      && vm_exec "$vm_name" adduser --disabled-password --comment '' "$vm_user" \
+      && vm_exec "$vm_name" sh -c 'printf "%s\n" "$1 ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/$1"' sh "$vm_user" \
+      && vm_exec "$vm_name" chmod 0440 "/etc/sudoers.d/${vm_user}" \
+      && vm_exec "$vm_name" visudo -cf "/etc/sudoers.d/${vm_user}" \
+      && sudo incus stop "$vm_name" \
+      || die "failed to create ${vm_name} VM"
+
+    trap - EXIT INT TERM
+  fi
+
+  success "${vm_name} VM set up"
 }
 
 main "$@"

@@ -100,30 +100,24 @@ gpg --verify SHA256SUMS_DEV.sign SHA256SUMS_DEV
 ```
 sha256sum --ignore-missing -c SHA256SUMS_DEV
 ```
-5. Create the base VM, then wait until `incus list` shows it with an IPv4 address
+5. Start the base VM created by `setup-desktop.sh`, then wait until `incus list` shows it with an IPv4 address
 ```
-incus launch images:debian/trixie dev-base --vm -c limits.cpu=4 -c limits.memory=8GiB
+incus start dev-base
 ```
-6. Create a user with sudo privileges in the VM
-```
-incus exec dev-base -- apt-get install --assume-yes curl sudo
-incus exec dev-base -- adduser dev
-incus exec dev-base -- usermod --append --groups sudo dev
-```
-7. Copy the verified files into the VM
+6. Copy the verified files into the VM
 ```
 incus file push --uid 1000 --gid 1000 setup-dev.sh SHA256SUMS_DEV dev-base/tmp/
 ```
-8. Log in to the VM as the new user and run the setup script
+7. Log in to the VM as the `dev` user and run the setup script
 ```
 incus exec dev-base -- su --login dev
 cd /tmp && chmod +x setup-dev.sh && ./setup-dev.sh
 ```
-9. After the VM reboots, snapshot it as the template for project VMs
+8. After the VM reboots, snapshot it as the template for project VMs
 ```
 incus snapshot create dev-base clean
 ```
-10. Create a VM for each project from the template
+9. Create a VM for each project from the template
 ```
 incus copy dev-base/clean proj-example
 incus start proj-example
@@ -238,6 +232,8 @@ For Debian desktop systems `setup-desktop.sh` will do the following:
     - Give VMs from the `default` profile a 30 GiB disk and the `sandbox` firewall rules
     - Block VMs from reaching the host, the local network and each other, while allowing internet access
     - Allow VMs to reach the host only for DHCP and DNS with `ufw`
+    - Create the `dev-base` VM from `images:debian/trixie` with half the host's CPUs and memory, up to 4 CPUs and 8 GiB
+    - Add a `dev` user with passwordless sudo to `dev-base`
 15. Install custom commands in `~/bin/`
     - `autoupgrade-desktop` (requires sudo)
     - `dnsleaktest`
