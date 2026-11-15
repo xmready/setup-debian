@@ -108,16 +108,19 @@ incus start dev-base
 ```
 incus file push --uid 1000 --gid 1000 setup-dev.sh SHA256SUMS_DEV dev-base/tmp/
 ```
-7. Log in to the VM as the `dev` user and run the setup script
+7. Log in to the VM as the `dev` user
 ```
 incus exec dev-base -- su --login dev
+```
+8. Run the setup script inside the VM
+```
 cd /tmp && chmod +x setup-dev.sh && ./setup-dev.sh
 ```
-8. After the VM reboots, snapshot it as the template for project VMs
+9. After the VM reboots, snapshot it as the template for project VMs
 ```
 incus snapshot create dev-base clean
 ```
-9. Create a VM for each project from the template
+10. Create a VM for each project from the template
 ```
 incus copy dev-base/clean proj-example
 incus start proj-example
