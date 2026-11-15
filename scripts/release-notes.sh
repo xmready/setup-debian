@@ -126,7 +126,7 @@ main() {
   print_section 'Other changes' ${others[@]+"${others[@]}"}
 
   if [[ -n "$previous_version" ]]; then
-    printf '\n**Full Changelog**: %s/compare/%s...%s\n' "$repo_url" "$previous_version" "$release_version"
+    printf '\n### Full changelog\n\n%s/compare/%s...%s\n' "$repo_url" "$previous_version" "$release_version"
   fi
 }
 
