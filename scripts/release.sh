@@ -89,8 +89,9 @@ main() {
   bash "${scripts_path}/sign-checksums.sh" \
     || die "${release_version} is committed and tagged but not signed, run sign-checksums.sh to retry"
 
-  info 'push the commit and tag, then upload the release files:'
+  info 'push the commit and tag, then upload the release files to the draft release and publish it:'
   info "${reset}  git push --atomic origin HEAD ${release_version}"
+  info "${reset}  https://github.com/xmready/setup-debian/releases"
 }
 
 main "$@"

@@ -1,0 +1,34 @@
+name: Draft release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone the repository at the release tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          git clone --quiet "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git" repo
+          git -C repo checkout --quiet "refs/tags/${TAG}"
+
+      - name: Create the draft release
+        working-directory: repo
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          bash scripts/release-notes.sh "$TAG" > "${RUNNER_TEMP}/release-notes.md"
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft \
+            --verify-tag \
+            --title "$TAG" \
+            --notes-file "${RUNNER_TEMP}/release-notes.md"
