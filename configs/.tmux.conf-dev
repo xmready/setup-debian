@@ -47,12 +47,12 @@ bind c new-window -c "#{pane_current_path}"
 # Smart pane switching with awareness of Vim splits.
 # See: https://github.com/christoomey/vim-tmux-navigator
 vim_pattern='(\S+/)?g?\.?(view|l?n?vim?x?|fzf)(diff)?(-wrapped)?'
-is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
+pass_arrows="ps -o state= -o comm= -t '#{pane_tty}' \
     | grep -iqE '^[^TXZ ]+ +${vim_pattern}$'"
-bind-key -n 'Left' if-shell "$is_vim" 'send-keys Left'  'select-pane -L'
-bind-key -n 'Down' if-shell "$is_vim" 'send-keys Down'  'select-pane -D'
-bind-key -n 'Up' if-shell "$is_vim" 'send-keys Up'  'select-pane -U'
-bind-key -n 'Right' if-shell "$is_vim" 'send-keys Right'  'select-pane -R'
+bind-key -n 'Left' if-shell "$pass_arrows" 'send-keys Left'  'select-pane -L'
+bind-key -n 'Down' if-shell "$pass_arrows" 'send-keys Down'  'select-pane -D'
+bind-key -n 'Up' if-shell "$pass_arrows" 'send-keys Up'  'select-pane -U'
+bind-key -n 'Right' if-shell "$pass_arrows" 'send-keys Right'  'select-pane -R'
 
 bind-key -T copy-mode-vi 'Left' select-pane -L
 bind-key -T copy-mode-vi 'Down' select-pane -D
