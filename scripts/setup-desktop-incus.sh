@@ -120,6 +120,10 @@ wait_for_agent() {
   done
 }
 
+has_alias() {
+  incus alias list --format csv | grep --quiet "^${1},"
+}
+
 delete_partial_vm() {
   if has_instance "$1"; then
     info "deleting the partial ${1} VM..."
@@ -151,6 +155,7 @@ main() {
   vm_name='dev-base'
   vm_image='images:debian/trixie'
   vm_user='dev'
+  vm_login_alias='dev'
   vm_max_cpus=4
   vm_max_memory_mib=8192
   vm_agent_timeout=120
@@ -313,6 +318,15 @@ main() {
   fi
 
   success "${vm_name} VM set up"
+
+  info 'adding incus login alias...'
+
+  if ! has_alias "$vm_login_alias"; then
+    incus alias add "$vm_login_alias" "exec @ARGS@ -- su --login ${vm_user}" \
+      || die 'failed to add incus login alias'
+  fi
+
+  success 'incus login alias added'
 }
 
 main "$@"

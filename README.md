@@ -110,7 +110,7 @@ incus file push --uid 1000 --gid 1000 setup-dev.sh SHA256SUMS_DEV dev-base/tmp/
 ```
 7. Log in to the VM as the `dev` user
 ```
-incus exec dev-base -- su --login dev
+incus dev dev-base
 ```
 8. Run the setup script inside the VM
 ```
