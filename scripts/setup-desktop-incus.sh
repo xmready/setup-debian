@@ -76,6 +76,40 @@ print(",".join(ranges))
 ' "$1" "$2"
 }
 
+eui64_link_local() {
+  python3 -I -c '
+import ipaddress
+import sys
+
+mac = bytes.fromhex(sys.argv[1].replace(":", ""))
+
+if len(mac) != 6:
+    sys.exit(1)
+
+interface_id = bytes([mac[0] ^ 0x02]) + mac[1:3] + b"\xff\xfe" + mac[3:]
+print(ipaddress.IPv6Address(b"\xfe\x80" + bytes(6) + interface_id))
+' "$1"
+}
+
+get_link_local() {
+  local network="$1" link_local addr_gen_mode mac
+
+  link_local="$(ip -6 -oneline address show dev "$network" scope link | awk 'NR == 1 {print $4}')" \
+    || return
+
+  if [[ -n "$link_local" ]]; then
+    printf '%s\n' "${link_local%/*}"
+    return
+  fi
+
+  # The kernel only adds a link-local address once the bridge has had a VM attached since boot,
+  # so work it out from the bridge MAC address the same way the kernel will
+  addr_gen_mode="$(< "/proc/sys/net/ipv6/conf/${network}/addr_gen_mode")" \
+    && [[ "$addr_gen_mode" == '0' ]] \
+    && mac="$(< "/sys/class/net/${network}/address")" \
+    && eui64_link_local "$mac"
+}
+
 is_managed_network() {
   sudo incus network show "$1" 2>/dev/null | grep --quiet --line-regexp 'managed: true'
 }
@@ -244,7 +278,6 @@ main() {
 
   ipv4_address="$(sudo incus network get "$network_name" ipv4.address)" \
     && ipv6_address="$(sudo incus network get "$network_name" ipv6.address)" \
-    && link_local="$(ip -6 -oneline address show dev "$network_name" scope link | awk 'NR == 1 {print $4}')" \
     && attached_acls="$(sudo incus profile device get default eth0 security.acls)" \
     || die 'failed to get incus network settings'
 
@@ -260,13 +293,12 @@ main() {
   ipv6_reject_ranges="$ipv6_private_ranges"
 
   if [[ "$ipv6_address" == */* ]]; then
-    host_addresses+=",${ipv6_address%/*}"
+    link_local="$(get_link_local "$network_name")" \
+      || die "failed to get the IPv6 link-local address of ${network_name}, start any incus VM once and run this again"
+
+    host_addresses+=",${ipv6_address%/*},${link_local}"
     ipv6_reject_ranges="$(exclude_address "${ipv6_address%/*}" "$ipv6_private_ranges")" \
       || die 'failed to build IPv6 firewall rules'
-  fi
-
-  if [[ -n "$link_local" ]]; then
-    host_addresses+=",${link_local%/*}"
   fi
 
   acl_rules="$(printf '%s\n' "$acl_template" \
