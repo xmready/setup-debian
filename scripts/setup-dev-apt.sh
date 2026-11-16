@@ -55,6 +55,7 @@ main() {
       curl \
       fzf \
       git \
+      gnupg \
       jq \
       openssh-client \
       ripgrep \

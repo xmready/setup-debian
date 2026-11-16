@@ -112,7 +112,7 @@ incus file push --uid 1000 --gid 1000 setup-dev.sh SHA256SUMS_DEV dev-base/tmp/
 ```
 incus dev dev-base
 ```
-8. Run the setup script inside the VM
+8. Run the setup script inside the VM and follow the prompts
 ```
 cd /tmp && chmod +x setup-dev.sh && ./setup-dev.sh
 ```
@@ -124,6 +124,14 @@ incus snapshot create dev-base clean
 ```
 incus copy dev-base/clean proj-example
 incus start proj-example
+```
+11. Log in to the project VM
+```
+incus dev proj-example
+```
+12. Create an SSH deploy key and GPG signing key on the project VM
+```
+vm-keys
 ```
 
 ## Setup Features
@@ -237,6 +245,7 @@ For Debian desktop systems `setup-desktop.sh` will do the following:
     - Allow VMs to reach the host only for DHCP and DNS with `ufw`
     - Create the `dev-base` VM from `images:debian/trixie` with half the host's CPUs and memory, up to 4 CPUs and 8 GiB
     - Add a `dev` user with passwordless sudo to `dev-base`
+    - Add an `incus dev` alias that logs in to a VM as the `dev` user
 15. Install custom commands in `~/bin/`
     - `autoupgrade-desktop` (requires sudo)
     - `dnsleaktest`
@@ -309,6 +318,7 @@ For Debian development VMs `setup-dev.sh` will do the following:
     - curl
     - fzf
     - git
+    - gnupg
     - jq
     - openssh-client
     - ripgrep
@@ -317,7 +327,8 @@ For Debian development VMs `setup-dev.sh` will do the following:
     - unzip
     - vim-nox
     - wget
-3. Customize `.bashrc` for the current user
+3. Set the git user name and email for the current user
+4. Customize `.bashrc` for the current user
     - Increase `HISTSIZE` & `HISTFILESIZE`
     - Customize prompt PS1
     - Set `EDITOR=vim`
@@ -325,27 +336,28 @@ For Debian development VMs `setup-dev.sh` will do the following:
     - Append current session's command history to the history file
     - Read any new lines from the history file
     - Set up fzf key bindings and fuzzy completion
-4. Download `.tmux.conf` files to current user & root home directory
-5. Install & configure [Vim](https://vim.org)
+5. Download `.tmux.conf` files to current user & root home directory
+6. Install & configure [Vim](https://vim.org)
     - Install `vim-nox`
     - Install custom `vimrc` for current user
     - Install custom `vimrc` for root user
     - Install custom template files in `~/.config/vim/templates/`
-6. Install [Homebrew](https://github.com/Homebrew/install)
+7. Install [Homebrew](https://github.com/Homebrew/install)
     - Install latest `brew` version to the current user
     - Update `.bashrc` to add `brew` to `$PATH`
     - Disable Homebrew analytics
-7. Install [Node Version Manager](https://github.com/nvm-sh/nvm)
+8. Install [Node Version Manager](https://github.com/nvm-sh/nvm)
     - Install latest `nvm` version to current user
     - Update `.bashrc` to use `nvm` automatically in directories with a `.nvmrc` file
     - Install latest stable version of Node.js
     - Creates the `nvm` alias `default` which points to the latest stable release
-8. Install and configure [OpenCode](https://opencode.ai)
+9. Install and configure [OpenCode](https://opencode.ai)
     - Install latest `opencode` version to current user
     - Download `tui.json` config file to `~/.config/opencode/`
-9. Install [Claude Code](https://code.claude.com)
+10. Install [Claude Code](https://code.claude.com)
     - Install latest `claude` version to current user with the native installer
-10. Install custom commands in `~/bin/`
+11. Install custom commands in `~/bin/`
     - `autoupgrade-dev` (requires sudo)
-11. Autoremove and clean packages using `apt-get`
-12. Reboot system after 10 minutes
+    - `vm-keys`
+12. Autoremove and clean packages using `apt-get`
+13. Reboot system after 10 minutes

@@ -1,0 +1,110 @@
+#!/usr/bin/bash
+
+# Discussion, issues and change requests at:
+#   https://github.com/xmready/setup-debian
+#
+# Purpose:
+#   A script to create the SSH deploy key and GPG signing key for a project VM,
+#   and print the host commands that copy the public keys for GitHub
+#
+# Usage:
+#   Run inside a project VM copied from the dev-base template:
+#     vm-keys
+
+set -euo pipefail
+
+red="$(tput setaf 1 2>/dev/null || true)"
+green="$(tput setaf 2 2>/dev/null || true)"
+yellow="$(tput setaf 3 2>/dev/null || true)"
+bold="$(tput bold 2>/dev/null || true)"
+reset="$(tput sgr0 2>/dev/null || true)"
+bel="$(tput bel 2>/dev/null || true)"
+readonly red green yellow bold reset bel
+
+success() { local msg="$*"; printf '%s\n' "${green}${bold}success: ${msg}${reset}"; }
+info() { local msg="$*"; printf '%s\n' "${yellow}${bold}info: ${msg}${reset}"; }
+err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}" >&2; }
+die() { err "$@"; exit 1; }
+
+get_gpg_key() {
+  gpg --list-secret-keys --with-colons -- "=${1}" 2>/dev/null \
+    | awk -F : '
+      $1 == "sec" && !sec   { validity = $2; key_id = $5; sec = 1; next }
+      $1 == "fpr" && sec && !fpr { fpr = $10 }
+      END { if (sec) print validity ":" key_id ":" fpr }
+    '
+}
+
+main() {
+  [[ "$EUID" -ne 0 ]] || die 'run as your normal user, not root'
+
+  vm_name="$(hostname)"
+  template_name='dev-base'
+  ssh_path="${HOME}/.ssh"
+  ssh_key_path="${ssh_path}/id_ed25519"
+  known_hosts_path="${ssh_path}/known_hosts"
+  github_meta_url='https://api.github.com/meta'
+  gpg_expiry='3m'
+
+  [[ "$vm_name" != "$template_name" ]] \
+    || die "run this in a project VM, not ${template_name}, or every VM copied from it shares the keys"
+
+  git_name="$(git config --global user.name)" \
+    && git_email="$(git config --global user.email)" \
+    || die 'git user name and email are not set, run setup-dev-git.sh first'
+
+  gpg_uid="${git_name} <${git_email}>"
+
+  info 'setting up SSH deploy key...'
+
+  if [[ ! -f "$ssh_key_path" ]]; then
+    install --directory --mode=700 -- "$ssh_path" \
+      && ssh-keygen -q -t ed25519 -N '' -C "${vm_name} deploy key" -f "$ssh_key_path" < /dev/null \
+      || die 'failed to create SSH deploy key'
+  fi
+
+  success 'SSH deploy key set up'
+
+  info 'adding GitHub SSH host keys...'
+
+  github_host_keys="$(curl -fsSL "$github_meta_url" | jq -r '.ssh_keys[] | "github.com " + .')" \
+    && [[ -n "$github_host_keys" ]] \
+    || die 'failed to download GitHub SSH host keys'
+
+  while read -r host_key; do
+    grep --quiet --line-regexp --fixed-strings -- "$host_key" "$known_hosts_path" 2>/dev/null \
+      || printf '%s\n' "$host_key" >> "$known_hosts_path" \
+      || die 'failed to add GitHub SSH host keys'
+  done <<< "$github_host_keys"
+
+  success 'GitHub SSH host keys added'
+
+  info 'setting up GPG signing key...'
+
+  if [[ -z "$(get_gpg_key "$gpg_uid")" ]]; then
+    gpg --batch --passphrase '' --quick-generate-key "$gpg_uid" ed25519 sign "$gpg_expiry" \
+      || die 'failed to create GPG signing key'
+  fi
+
+  IFS=: read -r gpg_key_validity gpg_key_id gpg_key_fpr <<< "$(get_gpg_key "$gpg_uid")"
+
+  [[ -n "$gpg_key_id" ]] \
+    || die "failed to find the GPG signing key for ${gpg_uid}"
+
+  [[ "$gpg_key_validity" != 'e' ]] \
+    || die "GPG signing key ${gpg_key_id} has expired, extend it with: gpg --quick-set-expire ${gpg_key_fpr} ${gpg_expiry}"
+
+  git config --global user.signingkey "$gpg_key_id" \
+    && git config --global commit.gpgsign true \
+    || die 'failed to configure git to sign commits'
+
+  success "GPG signing key ${gpg_key_id} set up"
+
+  info 'add the SSH key as a deploy key with write access in the repo settings on GitHub, copying it on the host with:'
+  info "${reset}  incus exec ${vm_name} -- su --login ${USER} -c 'cat ${ssh_key_path}.pub' | wl-copy"
+  info 'add the GPG key under SSH and GPG keys in your GitHub account settings, copying it on the host with:'
+  info "${reset}  incus exec ${vm_name} -- su --login ${USER} -c 'gpg --armor --export ${gpg_key_id}' | wl-copy"
+  info "delete both keys on GitHub when you delete ${vm_name}"
+}
+
+main "$@"

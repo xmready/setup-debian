@@ -34,6 +34,7 @@ main() {
   setup_scripts_url="${remote_raw_url}/${setup_remote_name}/${version}/scripts"
   commands=(
     'autoupgrade-dev'
+    'vm-keys'
   )
   commands_list="{$(IFS=,; printf '%s' "${commands[*]}")}"
 

@@ -58,6 +58,7 @@ main() {
 
   setup_files=(
     'setup-dev-apt.sh'
+    'setup-dev-git.sh'
     'setup-dev-shell.sh'
     'setup-dev-vim.sh'
     'setup-dev-homebrew.sh'
