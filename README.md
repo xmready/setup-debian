@@ -243,7 +243,7 @@ For Debian desktop systems `setup-desktop.sh` will do the following:
     - Give VMs from the `default` profile a 30 GiB disk and the `sandbox` firewall rules
     - Block VMs from reaching the host, the local network and each other, while allowing internet access
     - Allow VMs to reach the host only for DHCP and DNS with `ufw`
-    - Create the `dev-base` VM from `images:debian/trixie` with half the host's CPUs and memory, up to 4 CPUs and 8 GiB
+    - Create the `dev-base` VM from the latest stable Debian release with half the host's CPUs and memory, up to 4 CPUs and 8 GiB
     - Add a `dev` user with passwordless sudo to `dev-base`
     - Add an `incus dev` alias that logs in to a VM as the `dev` user
 15. Install custom commands in `~/bin/`

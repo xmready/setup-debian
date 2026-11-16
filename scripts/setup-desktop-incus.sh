@@ -120,6 +120,15 @@ wait_for_agent() {
   done
 }
 
+get_debian_stable_codename() {
+  local release codename
+
+  release="$(curl -fsSL "$1")" \
+    && codename="$(sed -n 's/^Codename: \([a-z][a-z]*\)$/\1/p' <<< "$release")" \
+    && [[ -n "$codename" ]] \
+    && printf '%s\n' "$codename"
+}
+
 has_alias() {
   incus alias list --format csv | grep --quiet "^${1},"
 }
@@ -153,7 +162,7 @@ main() {
   ipv4_private_ranges='10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,169.254.0.0/16,224.0.0.0/4'
   ipv6_private_ranges='fc00::/7'
   vm_name='dev-base'
-  vm_image='images:debian/trixie'
+  debian_release_url='https://deb.debian.org/debian/dists/stable/Release'
   vm_user='dev'
   vm_login_alias='dev'
   vm_max_cpus=4
@@ -298,6 +307,14 @@ main() {
     vm_cpus="$(get_vm_cpus "$vm_max_cpus")" \
       && vm_memory_mib="$(get_vm_memory_mib "$vm_max_memory_mib")" \
       || die 'failed to get the host CPUs and memory'
+
+    debian_codename="$(get_debian_stable_codename "$debian_release_url")" \
+      || die 'failed to get the latest stable Debian release'
+
+    vm_image="images:debian/${debian_codename}"
+
+    sudo incus image info "$vm_image" > /dev/null 2>&1 \
+      || die "the ${vm_image} image is not available from the Incus image server"
 
     trap 'delete_partial_vm "$vm_name"' EXIT
     trap 'exit 130' INT
