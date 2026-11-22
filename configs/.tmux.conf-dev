@@ -90,6 +90,7 @@ set -g status-right "| ${status_ip} | ${status_mem} | ${status_uptime} | ${statu
 # Window status
 setw -g window-status-format ' #I:#W '
 setw -g window-status-current-format ' #I:#W '
+setw -g window-status-current-style 'bg=black,fg=green,bold'
 
 # ============================================
 # COPY MODE
