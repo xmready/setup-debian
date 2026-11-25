@@ -66,7 +66,7 @@ main() {
   bashrc_path="${HOME}/.bashrc"
   bashrc_begin='# >>> setup-debian >>>'
   bashrc_end='# <<< setup-debian <<<'
-  custom_ps1='\n ${debian_chroot:+($debian_chroot)}\[\033[01;35m\]\t \[\033[32m\]\u@\h \[\033[34m\]\w \[\033[36m\]$(git branch --show-current 2>/dev/null)\[\033[00m\]\n └─❭ '
+  custom_ps1='\n ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h \[\033[35m\]\t \[\033[34m\]\w \[\033[36m\]$(git branch --show-current 2>/dev/null)\[\033[00m\]\n └─❭ '
   bashrc_block="$(printf '%s\n' \
     "PS1='${custom_ps1}'" \
     'PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"' \
