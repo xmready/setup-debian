@@ -71,6 +71,7 @@ main() {
     "PS1='${custom_ps1}'" \
     'PROMPT_COMMAND="history -a; history -n; $PROMPT_COMMAND"' \
     'export EDITOR=vim' \
+    "alias ll='ls -alh'" \
     'stty -ixon' \
     'eval "$(fzf --bash)"' \
     '[[ -z $TMUX && -z $VIMRUNTIME ]] && tmux new -A -s "$USER"')"
