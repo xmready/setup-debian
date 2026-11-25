@@ -81,7 +81,8 @@ main() {
   info "committing and tagging ${release_version}..."
 
   git commit --quiet --message "Release ${release_version}" -- "${setup_files[@]}" \
-    && git tag --annotate --message "Release ${release_version}" "$release_version" \
+    && git tag --sign --message "Release ${release_version}" "$release_version" \
+    && git tag --verify "$release_version" > /dev/null 2>&1 \
     || die 'failed to commit and tag'
 
   success "${release_version} committed and tagged"
