@@ -23,9 +23,16 @@ err() { local msg="$*"; printf '%s\n' "${red}${bold}error: ${msg}${reset}${bel}"
 die() { err "$@"; exit 1; }
 
 get_latest_release() {
-  curl --fail --silent "https://api.github.com/repos/$1/releases/latest" |
-  grep --max-count=1 '"tag_name":' |
-  sed -E 's/.*"tag_name": *"([^"]+)".*/\1/'
+  local tag
+
+  if ! tag="$(curl --fail --silent --show-error "https://api.github.com/repos/$1/releases/latest" \
+      | grep --max-count=1 '"tag_name":' \
+      | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')" || [[ -z "$tag" ]]; then
+    err "failed to get the latest $1 release"
+    return 1
+  fi
+
+  printf '%s\n' "$tag"
 }
 
 upgrade_node() {
@@ -68,7 +75,8 @@ main() {
       --fail \
       --silent \
       --show-error \
-      --location "${remote_raw_url}/${nvm_remote_name}/${nvm_version}/install.sh" \
+      --location \
+      "${remote_raw_url}/${nvm_remote_name}/${nvm_version}/install.sh" \
       | bash - \
     && [[ -s "${NVM_DIR}/nvm.sh" ]] \
     && \. "${NVM_DIR}/nvm.sh" \
